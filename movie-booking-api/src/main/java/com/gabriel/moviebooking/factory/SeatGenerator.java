@@ -12,7 +12,7 @@ public class SeatGenerator {
 
         List<Seat> seats = new ArrayList<>();
 
-        /*
+
         int rowsNeeded = (int) Math.ceil((double) capacity / seatsPerRow);
 
         char rowLetter = 'A';
@@ -39,7 +39,7 @@ public class SeatGenerator {
 
             rowLetter++;
         }
-        */
+
 
         return seats;
     }

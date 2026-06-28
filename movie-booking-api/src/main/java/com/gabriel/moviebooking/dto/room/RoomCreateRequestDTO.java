@@ -28,4 +28,8 @@ public class RoomCreateRequestDTO {
 
     @NotNull(message = "O tipo de sala (RoomType) é obrigatório.")
     String type;
+
+    @NotNull(message = "A quantidade de assentos por coluna é obrigatória .")
+    @Min(value = 1, message = "A quantidade de assentos por fileira deve ser maior que 0.")
+    Integer seatsPerRow;
 }

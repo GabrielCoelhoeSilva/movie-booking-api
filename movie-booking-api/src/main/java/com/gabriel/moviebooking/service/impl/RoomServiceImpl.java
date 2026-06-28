@@ -103,5 +103,9 @@ public class RoomServiceImpl implements RoomService {
         if (room.getCinema() == null) {
             throw new BusinessException("Room must be linked to a cinema");
         }
+
+        if (room.getSeatsPerRow() == null || room.getSeatsPerRow() <= 0) {
+            throw new BusinessException("Seats per row must be greater than 0");
+        }
     }
 }

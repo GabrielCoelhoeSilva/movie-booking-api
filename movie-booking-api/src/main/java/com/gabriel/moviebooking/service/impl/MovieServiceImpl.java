@@ -7,7 +7,7 @@ import com.gabriel.moviebooking.entity.Movie;
 import com.gabriel.moviebooking.exception.ResourceNotFoundException;
 import com.gabriel.moviebooking.mapper.MovieMapper;
 import com.gabriel.moviebooking.service.MovieService;
-import com.gabriel.moviebooking.repository.movieRepository;
+import com.gabriel.moviebooking.repository.MovieRepository;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class MovieServiceImpl implements MovieService {
 
-    private final movieRepository repository;
+    private final MovieRepository repository;
     private final MovieMapper mapper;
 
     @Override
@@ -73,7 +73,7 @@ public class MovieServiceImpl implements MovieService {
     @Transactional
     public void delete(final Long id) {
         if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException("Cinema not found with id" + id);
+            throw new ResourceNotFoundException("Movie not found with id" + id);
         }
         repository.deleteById(id);
     }

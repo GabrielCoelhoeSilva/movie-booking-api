@@ -17,4 +17,5 @@ public class RoomResponseDTO {
     Integer capacity;
     String type;
     Long cinemaId;
+    Integer seatsPerRow;
 }

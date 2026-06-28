@@ -14,6 +14,7 @@ public class RoomMapper {
         Room room = new Room();
         room.setName(dto.getName());
         room.setCapacity(dto.getCapacity());
+        room.setSeatsPerRow(dto.getSeatsPerRow());
         room.setType(RoomType.valueOf(dto.getType().toUpperCase()));
         return room;
     }
@@ -24,6 +25,11 @@ public class RoomMapper {
         dto.setId(room.getId());
         dto.setName(room.getName());
         dto.setCapacity(room.getCapacity());
+        dto.setSeatsPerRow(room.getSeatsPerRow());
+
+        if (room.getType() != null) {
+            dto.setType(room.getType().name());
+        }
 
         if (room.getCinema() != null) {
             dto.setCinemaId(room.getCinema().getId());
