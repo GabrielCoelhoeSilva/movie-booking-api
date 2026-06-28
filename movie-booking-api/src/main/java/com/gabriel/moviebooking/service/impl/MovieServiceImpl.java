@@ -23,6 +23,7 @@ public class MovieServiceImpl implements MovieService {
     private final MovieMapper mapper;
 
     @Override
+    @Transactional
     public MovieResponseDTO create(MovieRequestDTO dto) {
         Movie movie = mapper.toEntity(dto);
 
@@ -70,12 +71,10 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     @Transactional
-    public void delete(Long id) {
-
-        Movie movie = repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Movie not found with id: " + id));
-
-        repository.delete(movie);
+    public void delete(final Long id) {
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException("Cinema not found with id" + id);
+        }
+        repository.deleteById(id);
     }
 }
