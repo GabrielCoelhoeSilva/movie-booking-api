@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/bookings")
 @RequiredArgsConstructor
@@ -43,7 +45,13 @@ public class BookingController {
             @Valid @RequestBody BookingCreateRequestDTO dto,
             Authentication authentication) {
 
+        log.info("Tentativa de criar reserva para a Sessão ID: {} com os Assentos IDs: {}",
+                dto.getSessionId(), dto.getSeatIds());
+
         BookingResponseDTO response = service.create(dto, authentication);
+
+        log.info("Reserva criada com sucesso. ID: {} | Status: PENDING (Expira em 10 minutos)", response.getId());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -64,7 +72,12 @@ public class BookingController {
             @PathVariable Long id,
             Authentication authentication) {
 
-        return ResponseEntity.ok(service.confirm(id, authentication));
+        log.info("Solicitada a confirmação do pagamento/reserva para o ID: {}", id);
+
+        BookingResponseDTO response = service.confirm(id, authentication);
+
+        log.info("Reserva ID: {} CONFIRMADA com sucesso no sistema", id);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{id}/cancel")
@@ -84,7 +97,13 @@ public class BookingController {
             @PathVariable Long id,
             Authentication authentication) {
 
-        return ResponseEntity.ok(service.cancel(id, authentication));
+        log.info("Solicitado o cancelamento da reserva ID: {}", id);
+
+        BookingResponseDTO response = service.cancel(id, authentication);
+
+        log.info("Reserva ID: {} foi CANCELADA com sucesso e os assentos correspondentes foram liberados", id);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
@@ -99,6 +118,9 @@ public class BookingController {
     @ApiResponse(responseCode = "401", description = "Não autenticado",
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     public ResponseEntity<BookingResponseDTO> findById(@PathVariable Long id) {
+
+        log.info("Buscando detalhes da reserva ID: {}", id);
+
         return ResponseEntity.ok(service.findById(id));
     }
 
@@ -111,6 +133,12 @@ public class BookingController {
     @ApiResponse(responseCode = "401", description = "Não autenticado",
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     public ResponseEntity<List<BookingResponseDTO>> findMyBookings(Authentication authentication) {
-        return ResponseEntity.ok(service.findMyBookings(authentication));
+        log.info("Listando o histórico de reservas do usuário atual");
+
+        List<BookingResponseDTO> response = service.findMyBookings(authentication);
+
+        log.info("Total de reservas encontradas para este usuário: {}", response.size());
+
+        return ResponseEntity.ok(response);
     }
 }

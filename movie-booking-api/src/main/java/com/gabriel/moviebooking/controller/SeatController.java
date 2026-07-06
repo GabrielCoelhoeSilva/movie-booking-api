@@ -10,11 +10,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/seats")
 @RequiredArgsConstructor
@@ -35,7 +37,12 @@ public class SeatController {
             @Parameter(description = "ID da sessão", required = true)
             @RequestParam Long sessionId) {
 
+        log.info("Buscando mapa de assentos para a sessão com ID: {}", sessionId);
+
         List<SeatResponseDTO> response = service.findBySessionId(sessionId);
+
+        log.info("Mapa de assentos retornado com sucesso para a sessão ID: {}. Total de assentos: {}",
+                sessionId, response.size());
 
         return ResponseEntity.ok(response);
     }

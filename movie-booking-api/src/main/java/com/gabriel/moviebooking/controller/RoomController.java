@@ -11,12 +11,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/rooms")
 @RequiredArgsConstructor
@@ -34,7 +36,13 @@ public class RoomController {
     @ApiResponse(responseCode = "403", description = "Acesso negado",
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     public ResponseEntity<RoomResponseDTO> create(@Valid @RequestBody RoomCreateRequestDTO dto) {
+
+        log.info("Tentativa de cadastro de nova sala: '{}' para o Cinema ID: {}", dto.getName(), dto.getCinemaId());
+
         RoomResponseDTO createdRoom = roomService.create(dto);
+
+        log.info("Sala '{}' cadastrada com sucesso. ID gerado: {}", createdRoom.getName(), createdRoom.getId());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRoom);
     }
 
@@ -48,7 +56,13 @@ public class RoomController {
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     public ResponseEntity<RoomResponseDTO> update(@PathVariable Long id,
                                                   @Valid @RequestBody RoomCreateRequestDTO dto) {
+
+        log.info("Solicitada atualização para a sala ID: {}. Novos dados - Nome: '{}'", id, dto.getName());
+
         RoomResponseDTO updatedRoom = roomService.update(id, dto);
+
+        log.info("Sala ID: {} atualizada com sucesso.", id);
+
         return ResponseEntity.ok(updatedRoom);
     }
 
@@ -59,7 +73,11 @@ public class RoomController {
     @ApiResponse(responseCode = "404", description = "Sala não encontrada",
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     public ResponseEntity<RoomResponseDTO> findById(@PathVariable Long id) {
+
+        log.info("Buscando dados da sala ID: {}", id);
+
         RoomResponseDTO room = roomService.findById(id);
+
         return ResponseEntity.ok(room);
     }
 
@@ -67,7 +85,13 @@ public class RoomController {
     @Operation(summary = "Listar salas", description = "Retorna todas as salas cadastradas.")
     @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
     public ResponseEntity<List<RoomResponseDTO>> findAll() {
+
+        log.info("Listando todas as salas cadastradas no sistema");
+
         List<RoomResponseDTO> rooms = roomService.findAll();
+
+        log.info("Total de salas listadas: {}", rooms.size());
+
         return ResponseEntity.ok(rooms);
     }
 
@@ -79,7 +103,13 @@ public class RoomController {
     @ApiResponse(responseCode = "403", description = "Acesso negado",
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     public ResponseEntity<Void> delete(@PathVariable Long id) {
+
+        log.info("Solicitada exclusão da sala ID: {}", id);
+
         roomService.delete(id);
+
+        log.info("Sala ID: {} excluída com sucesso do sistema", id);
+
         return ResponseEntity.noContent().build();
     }
 }

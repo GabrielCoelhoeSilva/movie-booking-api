@@ -11,12 +11,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/sessions")
 @RequiredArgsConstructor
@@ -38,7 +40,11 @@ public class SessionController {
     public ResponseEntity<SessionResponseDTO> create(
             @Valid @RequestBody SessionCreateRequestDTO dto) {
 
+        log.info("Recebida requisição para criar sessão. Filme ID: {}, Sala ID: {}, Horário: {} ", dto.getMovieId(), dto.getRoomId(),dto.getStartTime());
+
         SessionResponseDTO response = service.create(dto);
+
+        log.info("Sessão criada com sucesso. ID: {} (Assentos gerados automaticamente", response.getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -52,6 +58,8 @@ public class SessionController {
     public ResponseEntity<SessionResponseDTO> findById(
             @PathVariable Long id) {
 
+        log.info("Buscando detalhes da sessão com ID: {}", id);
+
         SessionResponseDTO response = service.findById(id);
 
         return ResponseEntity.ok(response);
@@ -62,7 +70,11 @@ public class SessionController {
     @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
     public ResponseEntity<List<SessionResponseDTO>> findAll() {
 
+        log.info("Listando todas as sessões de cinema cadastradas");
+
         List<SessionResponseDTO> response = service.findAll();
+
+        log.info("Total de sessões encontradas: {}", response.size());
 
         return ResponseEntity.ok(response);
     }
@@ -77,7 +89,11 @@ public class SessionController {
     public ResponseEntity<Void> delete(
             @PathVariable Long id) {
 
+        log.info("Recebida requisição para deletar sessão com ID: {} e remover seus assentos vinculados", id);
+
         service.delete(id);
+
+        log.info("Sessão com ID: {} deletada com sucesso do sistema", id);
 
         return ResponseEntity.noContent().build();
     }
