@@ -1,0 +1,19 @@
+# Build do Maven
+target/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Variáveis de ambiente (nunca deve entrar na imagem)
+.env
+
+# Logs
+*.log
+logs/

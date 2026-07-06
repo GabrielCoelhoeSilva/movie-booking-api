@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +24,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -45,6 +47,8 @@ public class AuthController {
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     public ResponseEntity<AuthResponseDTO> register(@Valid @RequestBody RegisterRequestDTO dto) {
 
+        log.info("Tentativa de registro para o email: {}", dto.getEmail());
+
         if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new BusinessException("Email already in use");
         }
@@ -56,6 +60,8 @@ public class AuthController {
         user.setRole(Role.CUSTOMER);
 
         userRepository.save(user);
+
+        log.info("Usuário registrado com sucesso: id={}, email={}", user.getId(),user.getEmail());
 
         String token = jwtService.generateToken(user);
 
@@ -73,13 +79,24 @@ public class AuthController {
             content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginRequestDTO dto) {
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
+        log.info("Tentativa de login para o email: {}",dto.getEmail());
+
+        try{
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
+        } catch (Exception ex) {
+            log.warn("Falha de autenticação para o email: {} - Motivo: {}", dto.getEmail(), ex.getMessage());
+            throw ex;
+
+        }
+
 
         User user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new BusinessException("Invalid email or password"));
 
         String token = jwtService.generateToken(user);
+
+        log.info("Login bem-sucedido: id{}, email={}", user.getId(),user.getEmail());
 
         return ResponseEntity.ok(new AuthResponseDTO(token));
     }

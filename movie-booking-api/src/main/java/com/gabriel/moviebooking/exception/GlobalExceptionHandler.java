@@ -1,8 +1,10 @@
 package com.gabriel.moviebooking.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -73,5 +76,24 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponseDTO> handleAuthenticationException(
+            AuthenticationException ex,
+            HttpServletRequest request) {
+
+        log.warn("Falha de autenticação: {}", ex.getMessage());
+
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO(
+                status.value(),
+                status.getReasonPhrase(),
+                "Invalid email or password",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(errorResponse);
     }
 }
