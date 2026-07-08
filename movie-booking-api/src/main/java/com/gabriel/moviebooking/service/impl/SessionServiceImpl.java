@@ -15,6 +15,8 @@ import com.gabriel.moviebooking.repository.RoomRepository;
 import com.gabriel.moviebooking.repository.SessionRepository;
 import com.gabriel.moviebooking.service.SessionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,7 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "sessions", allEntries = true)
     public SessionResponseDTO create(SessionCreateRequestDTO dto) {
 
         Movie movie = movieRepository.findById(dto.getMovieId())
@@ -72,12 +75,14 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    @Cacheable(value = "sessions", key = "#id")
     public SessionResponseDTO findById(Long id) {
         Session session = findEntityById(id);
         return sessionMapper.toResponseDTO(session);
     }
 
     @Override
+    @Cacheable(value = "sessions")
     public List<SessionResponseDTO> findAll() {
         return sessionRepository.findAll()
                 .stream()
@@ -87,6 +92,7 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "sessions", allEntries = true)
     public void delete(Long id) {
         Session session = findEntityById(id);
         sessionRepository.delete(session);

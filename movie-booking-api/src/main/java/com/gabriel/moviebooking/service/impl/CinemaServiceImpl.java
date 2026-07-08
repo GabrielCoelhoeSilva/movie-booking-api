@@ -10,6 +10,8 @@ import com.gabriel.moviebooking.mapper.CinemaMapper;
 import com.gabriel.moviebooking.repository.CinemaRepository;
 import com.gabriel.moviebooking.service.CinemaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,7 @@ public class CinemaServiceImpl implements CinemaService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "cinemas", allEntries = true)
     public CinemaResponseDTO create(final CinemaCreateDTO dto) {
         Cinema cinema = mapper.toEntity(dto);
         Cinema savedCinema = repository.save(cinema);
@@ -32,6 +35,7 @@ public class CinemaServiceImpl implements CinemaService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "cinemas", key = "#id")
     public CinemaResponseDTO findById(final Long id) {
         return repository.findById(id)
                 .map(mapper::toResponseDTO)
@@ -40,6 +44,7 @@ public class CinemaServiceImpl implements CinemaService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "cinemas")
     public List<CinemaResponseDTO> findAll() {
         return repository.findAll()
                 .stream()
@@ -49,6 +54,7 @@ public class CinemaServiceImpl implements CinemaService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "cinemas", allEntries = true)
     public CinemaResponseDTO update(final Long id, final CinemaUpdateDTO dto) {
         Cinema cinema = repository.findById(id)
                 .orElseThrow(() -> new CinemaNotFoundException(id));
@@ -61,6 +67,7 @@ public class CinemaServiceImpl implements CinemaService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "cinemas", allEntries = true)
     public void delete(final Long id) {
         if (!repository.existsById(id)) {
             throw new CinemaNotFoundException(id);

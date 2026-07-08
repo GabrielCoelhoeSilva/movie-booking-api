@@ -15,6 +15,7 @@ import com.gabriel.moviebooking.repository.SeatRepository;
 import com.gabriel.moviebooking.repository.SessionRepository;
 import com.gabriel.moviebooking.service.BookingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "seats", allEntries = true)
     public BookingResponseDTO create(BookingCreateRequestDTO dto, Authentication authentication) {
 
         User user = (User) authentication.getPrincipal();
@@ -103,6 +105,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "seats", allEntries = true)
     public BookingResponseDTO cancel(Long id, Authentication authentication) {
 
         Booking booking = findEntityById(id);

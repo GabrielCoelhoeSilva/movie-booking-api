@@ -5,6 +5,7 @@ import com.gabriel.moviebooking.mapper.SeatMapper;
 import com.gabriel.moviebooking.repository.SeatRepository;
 import com.gabriel.moviebooking.service.SeatService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class SeatServiceImpl implements SeatService {
     private final SeatMapper seatMapper;
 
     @Override
+    @Cacheable(value = "seats", key = "#sessionId")
     public List<SeatResponseDTO> findBySessionId(Long sessionId) {
         return seatRepository.findBySessionId(sessionId)
                 .stream()
