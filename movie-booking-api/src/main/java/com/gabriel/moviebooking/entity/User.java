@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,6 +40,15 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @Column(nullable = false)
+    private boolean verified = false;
+
+    @Column
+    private String verificationCode;
+
+    @Column
+    private LocalDateTime verificationCodeExpiresAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
