@@ -139,6 +139,51 @@ public class AuthServiceImpl implements AuthService {
         return new MessageResponseDTO("Novo código enviado para " + dto.getEmail());
     }
 
+    @Override
+    public MessageResponseDTO forgotPassword(ForgotPasswordRequestDTO dto) {
+
+        User user = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User not found with email: " + dto.getEmail()));
+
+        if (!user.isVerified()) {
+            throw new BusinessException("Email not verified");
+        }
+
+        String code = generateVerificationCode();
+        user.setPasswordResetCode(code);
+        user.setPasswordResetCodeExpiresAt(LocalDateTime.now().plusMinutes(10));
+        userRepository.save(user);
+
+        emailService.sendPasswordResetCode(user.getEmail(), user.getName(), code);
+
+        return new MessageResponseDTO("Código de recuperação enviado para " + dto.getEmail());
+    }
+
+    @Override
+    public MessageResponseDTO resetPassword(ResetPasswordRequestDTO dto) {
+
+        User user = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User not found with email: " + dto.getEmail()));
+
+        if (user.getPasswordResetCode() == null ||
+                !user.getPasswordResetCode().equals(dto.getCode())) {
+            throw new BusinessException("Invalid reset code");
+        }
+
+        if (user.getPasswordResetCodeExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new BusinessException("Reset code has expired");
+        }
+
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        user.setPasswordResetCode(null);
+        user.setPasswordResetCodeExpiresAt(null);
+        userRepository.save(user);
+
+        return new MessageResponseDTO("Senha redefinida com sucesso");
+    }
+
     private String generateVerificationCode() {
         Random random = new Random();
         int code = 100000 + random.nextInt(900000);

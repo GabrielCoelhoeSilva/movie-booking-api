@@ -62,4 +62,18 @@ public class AuthController {
         MessageResponseDTO response = authService.resendCode(dto);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<MessageResponseDTO> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequestDTO dto) {
+
+        return ResponseEntity.ok(authService.forgotPassword(dto));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<MessageResponseDTO> resetPassword(
+            @Valid @RequestBody ResetPasswordRequestDTO dto) {
+
+        return ResponseEntity.ok(authService.resetPassword(dto));
+    }
 }

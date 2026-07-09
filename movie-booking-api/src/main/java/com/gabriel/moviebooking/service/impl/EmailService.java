@@ -37,4 +37,26 @@ public class EmailService {
             throw new RuntimeException("Erro ao enviar email de verificação", e);
         }
     }
+
+    public void sendPasswordResetCode(String toEmail, String name, String code) {
+        try {
+            Context context = new Context();
+            context.setVariable("name", name);
+            context.setVariable("code", code);
+
+            String htmlContent = templateEngine.process("email/reset-password", context);
+
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(toEmail);
+            helper.setSubject("Redefinição de senha - Movie Booking");
+            helper.setText(htmlContent, true);
+
+            mailSender.send(message);
+
+        } catch (MessagingException e) {
+            throw new RuntimeException("Erro ao enviar email de redefinição de senha", e);
+        }
+    }
 }
