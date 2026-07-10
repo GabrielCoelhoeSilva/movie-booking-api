@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Random;
 
 @Slf4j
@@ -142,13 +143,15 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public MessageResponseDTO forgotPassword(ForgotPasswordRequestDTO dto) {
 
-        User user = userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "User not found with email: " + dto.getEmail()));
+        String genericMessage = "Se esse email estiver cadastrado, voce recebera um codigo em breve.";
 
-        if (!user.isVerified()) {
-            throw new BusinessException("Email not verified");
+        Optional<User> userOptional = userRepository.findByEmail(dto.getEmail());
+
+        if (userOptional.isEmpty() || !userOptional.get().isVerified()) {
+            return new MessageResponseDTO(genericMessage);
         }
+
+        User user = userOptional.get();
 
         String code = generateVerificationCode();
         user.setPasswordResetCode(code);
@@ -157,7 +160,7 @@ public class AuthServiceImpl implements AuthService {
 
         emailService.sendPasswordResetCode(user.getEmail(), user.getName(), code);
 
-        return new MessageResponseDTO("Código de recuperação enviado para " + dto.getEmail());
+        return new MessageResponseDTO(genericMessage);
     }
 
     @Override
