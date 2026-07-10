@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs").permitAll()
                         .requestMatchers("/webjars/**").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/movies/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/sessions/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/seats/**").permitAll()
