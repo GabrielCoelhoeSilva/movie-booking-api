@@ -4,4 +4,5 @@ public enum RoomType {
     NORMAL,
     VIP,
     IMAX,
+    STANDARD
 }

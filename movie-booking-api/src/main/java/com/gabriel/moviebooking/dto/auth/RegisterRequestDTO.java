@@ -15,13 +15,15 @@ import lombok.Setter;
 public class RegisterRequestDTO {
 
     @NotBlank(message = "O nome é obrigatório.")
+    @Size(min = 2, max = 100, message = "O nome deve ter entre 2 e 100 caracteres.")
     private String name;
 
     @NotBlank(message = "O email é obrigatório.")
     @Email(message = "Email inválido.")
+    @Size(max = 150, message = "O email deve ter no máximo 150 caracteres.")
     private String email;
 
     @NotBlank(message = "A senha é obrigatória.")
-    @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres.")
+    @Size(min = 6, max = 50, message = "A senha deve ter entre 6 e 50 caracteres.")
     private String password;
 }
