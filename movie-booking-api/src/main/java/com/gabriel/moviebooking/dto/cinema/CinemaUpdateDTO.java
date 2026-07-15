@@ -48,5 +48,5 @@ public class CinemaUpdateDTO {
     )
     private String zipCode;
 
-    // getters and setters
+
 }
