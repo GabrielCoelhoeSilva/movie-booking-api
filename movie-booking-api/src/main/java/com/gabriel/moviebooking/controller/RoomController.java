@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class RoomController implements RoomControllerDocs {
 
     @Override
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoomResponseDTO> create(@Valid @RequestBody RoomCreateRequestDTO dto) {
         log.info("Tentativa de cadastro de nova sala: '{}' para o Cinema ID: {}", dto.getName(), dto.getCinemaId());
 
@@ -35,6 +37,7 @@ public class RoomController implements RoomControllerDocs {
 
     @Override
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoomResponseDTO> update(@PathVariable Long id,
                                                   @Valid @RequestBody RoomCreateRequestDTO dto) {
         log.info("Solicitada atualização para a sala ID: {}. Novos dados - Nome: '{}'", id, dto.getName());
@@ -48,6 +51,7 @@ public class RoomController implements RoomControllerDocs {
 
     @Override
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoomResponseDTO> findById(@PathVariable Long id) {
         log.info("Buscando dados da sala ID: {}", id);
 
@@ -58,6 +62,7 @@ public class RoomController implements RoomControllerDocs {
 
     @Override
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RoomResponseDTO>> findAll() {
         log.info("Listando todas as salas cadastradas no sistema");
 
@@ -70,6 +75,7 @@ public class RoomController implements RoomControllerDocs {
 
     @Override
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("Solicitada exclusão da sala ID: {}", id);
 
