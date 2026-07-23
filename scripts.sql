@@ -1,1 +1,0 @@
-CREATE DATABASE cinema_booking_db
