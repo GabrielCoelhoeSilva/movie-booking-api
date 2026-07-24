@@ -1,4 +1,4 @@
-package com.gabriel.moviebooking.factory;
+package com.gabriel.moviebooking.factories;
 
 import com.gabriel.moviebooking.dto.room.RoomCreateRequestDTO;
 import com.gabriel.moviebooking.entity.Cinema;

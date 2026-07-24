@@ -5,7 +5,7 @@ import com.gabriel.moviebooking.dto.room.RoomCreateRequestDTO;
 import com.gabriel.moviebooking.entity.Cinema;
 import com.gabriel.moviebooking.entity.Room;
 import com.gabriel.moviebooking.factories.CinemaFactory;
-import com.gabriel.moviebooking.factory.RoomFactory;
+import com.gabriel.moviebooking.factories.RoomFactory;
 import com.gabriel.moviebooking.repository.CinemaRepository;
 import com.gabriel.moviebooking.repository.RoomRepository;
 import org.junit.jupiter.api.Test;

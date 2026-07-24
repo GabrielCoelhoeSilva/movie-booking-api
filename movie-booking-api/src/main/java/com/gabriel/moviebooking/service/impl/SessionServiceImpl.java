@@ -7,6 +7,7 @@ import com.gabriel.moviebooking.entity.Room;
 import com.gabriel.moviebooking.entity.Seat;
 import com.gabriel.moviebooking.entity.Session;
 import com.gabriel.moviebooking.exception.BusinessException;
+import com.gabriel.moviebooking.exception.ConflictException;
 import com.gabriel.moviebooking.exception.ResourceNotFoundException;
 import com.gabriel.moviebooking.factory.SeatGenerator;
 import com.gabriel.moviebooking.mapper.SessionMapper;
@@ -52,8 +53,9 @@ public class SessionServiceImpl implements SessionService {
                 room.getId(), startTime, endTime);
 
         if (hasConflict) {
-            throw new BusinessException(
-                    "Room already has a session scheduled in this time range");
+            throw new ConflictException(
+                    "Room already has a session scheduled in this time range"
+            );
         }
 
         Session session = new Session();
