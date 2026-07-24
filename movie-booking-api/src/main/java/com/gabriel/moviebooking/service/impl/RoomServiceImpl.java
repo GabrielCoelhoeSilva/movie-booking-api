@@ -59,6 +59,7 @@ public class RoomServiceImpl implements RoomService {
         existingRoom.setCapacity(dto.getCapacity());
         existingRoom.setType(roomMapper.toEntity(dto).getType());
         existingRoom.setCinema(cinema);
+        existingRoom.setSeatsPerRow(dto.getSeatsPerRow());
 
         validateRoom(existingRoom);
 
