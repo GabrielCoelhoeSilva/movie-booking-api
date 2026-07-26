@@ -6,6 +6,7 @@ import com.gabriel.moviebooking.entity.Movie;
 import com.gabriel.moviebooking.entity.Room;
 import com.gabriel.moviebooking.entity.Session;
 import com.gabriel.moviebooking.exception.BusinessException;
+import com.gabriel.moviebooking.exception.ConflictException;
 import com.gabriel.moviebooking.exception.ResourceNotFoundException;
 import com.gabriel.moviebooking.factory.SeatGenerator;
 import com.gabriel.moviebooking.mapper.SessionMapper;
@@ -144,7 +145,7 @@ class SessionServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar BusinessException quando houver conflito de horário")
+    @DisplayName("Deve lançar ConflictException quando houver conflito de horário")
     void shouldThrowExceptionWhenTimeConflict() {
 
         // ARRANGE
@@ -170,7 +171,7 @@ class SessionServiceImplTest {
 
         // ASSERT
         assertThat(exception)
-                .isInstanceOf(BusinessException.class)
+                .isInstanceOf(ConflictException.class)
                 .hasMessageContaining("time range");
     }
 

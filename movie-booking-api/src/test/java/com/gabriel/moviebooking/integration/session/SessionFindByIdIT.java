@@ -1,6 +1,7 @@
 package com.gabriel.moviebooking.integration.session;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gabriel.moviebooking.BaseIntegrationTest;
 import com.gabriel.moviebooking.entity.Cinema;
 import com.gabriel.moviebooking.entity.Movie;
 import com.gabriel.moviebooking.entity.Room;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class SessionFindByIdIT {
+@ActiveProfiles("test")
+public class SessionFindByIdIT extends BaseIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;

@@ -1,6 +1,7 @@
 package com.gabriel.moviebooking.integration.session;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gabriel.moviebooking.BaseIntegrationTest;
 import com.gabriel.moviebooking.dto.session.SessionCreateRequestDTO;
 import com.gabriel.moviebooking.entity.Cinema;
 import com.gabriel.moviebooking.entity.Movie;
@@ -36,7 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class SessionCreateIT {
+@ActiveProfiles("test")
+public class SessionCreateIT extends BaseIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
